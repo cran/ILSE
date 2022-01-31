@@ -12,9 +12,9 @@
 
 <meta name="author" content="Wei Liu" />
 
-<meta name="date" content="2022-01-06" />
+<meta name="date" content="2022-01-31" />
 
-<title>ILSE: installation and simulated example</title>
+<title>ILSE: simulated examples</title>
 
 
 <style type="text/css">
@@ -316,32 +316,28 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
-<h1 class="title toc-ignore">ILSE: installation and simulated example</h1>
+<h1 class="title toc-ignore">ILSE: simulated examples</h1>
 <h4 class="author">Wei Liu</h4>
-<h4 class="date">2022-01-06</h4>
+<h4 class="date">2022-01-31</h4>
 
 
 
-<div id="install-the-ilse" class="section level2">
-<h2>Install the ILSE</h2>
-<p>This vignette provides an introduction to the R package <code>ILSE</code>, where the function <code>ILSE</code> implements the model <code>ILSE</code>, Linear Regression by Iterative Least Square Estimation (ILSE) When Covariates Include Missing Values. The package can be installed with the command from <a href="https://github.com/feiyoung/ILSE">Github</a>:</p>
-<p><code>library(remotes)</code></p>
-<p><code>remotes::install_github(&quot;feiyoung/ILSE&quot;)</code></p>
-<p>or install from <a href="https://cran.r-project.org/">CRAN</a></p>
-<p><code>install.packages(&quot;ILSE&quot;)</code></p>
+<div id="load-ilse-package" class="section level1">
+<h1>Load ILSE package</h1>
 <p>The package can be loaded with the command:</p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(<span class="st">&quot;ILSE&quot;</span>)</a></code></pre></div>
 </div>
-<div id="fit-linear-model-using-simulated-data" class="section level2">
-<h2>Fit linear model using simulated data</h2>
-<p>First, we generate the data with homogeneous normal variables.</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">  n &lt;-<span class="st"> </span><span class="dv">100</span></a>
-<a class="sourceLine" id="cb2-2" title="2">  p &lt;-<span class="st"> </span><span class="dv">6</span></a>
-<a class="sourceLine" id="cb2-3" title="3">  X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), <span class="kw">cor.mat</span>(p, <span class="dt">rho=</span><span class="fl">0.5</span>))</a>
-<a class="sourceLine" id="cb2-4" title="4">  beta0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>), <span class="dt">times=</span><span class="dv">3</span>)</a>
-<a class="sourceLine" id="cb2-5" title="5">  Y &lt;-<span class="st"> </span><span class="dv">-2</span><span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta0 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span><span class="dv">1</span>)</a></code></pre></div>
-<div id="a-special-case-without-missing-values" class="section level3">
-<h3>A special case: without missing values</h3>
+<div id="ilse-can-handle-nonmissing-data-with-continuous-variables" class="section level1">
+<h1>ILSE can handle (non)missing data with continuous variables</h1>
+<p>First, we generate a small simulated data.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb2-1" title="1">  <span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb2-2" title="2">  n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb2-3" title="3">  p &lt;-<span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb2-4" title="4">  X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), <span class="kw">cor.mat</span>(p, <span class="dt">rho=</span><span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb2-5" title="5">  beta0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>), <span class="dt">times=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb2-6" title="6">  Y &lt;-<span class="st"> </span><span class="dv">-2</span><span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta0 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span><span class="dv">1</span>)</a></code></pre></div>
+<div id="a-special-case-without-missing-values" class="section level2">
+<h2>A special case: without missing values</h2>
 <p>Then, we fit the linear regression model without missing values based on ILSE.</p>
 <div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb3-1" title="1">ilse1 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>X)</a>
 <a class="sourceLine" id="cb3-2" title="2"><span class="kw">print</span>(ilse1)</a></code></pre></div>
@@ -350,14 +346,14 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb4-2" title="2">ilse1 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>., <span class="dt">data=</span>dat)</a>
 <a class="sourceLine" id="cb4-3" title="3"><span class="kw">print</span>(ilse1)</a>
 <a class="sourceLine" id="cb4-4" title="4"><span class="kw">Coef</span>(ilse1) <span class="co"># access the coefficients</span></a>
-<a class="sourceLine" id="cb4-5" title="5"><span class="kw">Fitted.values</span>(ilse1)</a>
-<a class="sourceLine" id="cb4-6" title="6"><span class="kw">Residuals</span>(ilse1)</a></code></pre></div>
+<a class="sourceLine" id="cb4-5" title="5"><span class="kw">Fitted.values</span>(ilse1)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a>
+<a class="sourceLine" id="cb4-6" title="6"><span class="kw">Residuals</span>(ilse1)[<span class="dv">1</span><span class="op">:</span><span class="dv">5</span>]</a></code></pre></div>
 <p>Check the significant variables by bootstratp.</p>
 <div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb5-1" title="1">s1 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse1)</a>
 <a class="sourceLine" id="cb5-2" title="2">s1</a></code></pre></div>
 </div>
-<div id="handle-data-with-missing-values" class="section level3">
-<h3>Handle data with missing values</h3>
+<div id="handle-data-with-missing-values" class="section level2">
+<h2>Handle data with missing values</h2>
 <p>First, we randomly remove some entries in X.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb6-1" title="1">mis_rate &lt;-<span class="st"> </span><span class="fl">0.3</span></a>
 <a class="sourceLine" id="cb6-2" title="2"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
@@ -370,58 +366,163 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb7-1" title="1">lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Y<span class="op">~</span>Xmis)</a>
 <a class="sourceLine" id="cb7-2" title="2">s_cc &lt;-<span class="st"> </span><span class="kw">summary.lm</span>(lm1)</a>
 <a class="sourceLine" id="cb7-3" title="3">s_cc</a></code></pre></div>
-<p>Third, we use <em>ILSE</em> to fit the linear regression model based on all data.</p>
-<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">ilse2 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>Xmis, <span class="dt">data=</span><span class="ot">NULL</span>, <span class="dt">infor_output=</span>T)</a>
+<p>Third, we use <em>ILSE</em> to fit the linear regression model based on all data. We can fit a linear regression model without intercept by setting formula:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb8-1" title="1">ilse2 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>Xmis<span class="op">+</span><span class="dv">0</span>, <span class="dt">data=</span><span class="ot">NULL</span>, <span class="dt">verbose=</span>T)</a>
 <a class="sourceLine" id="cb8-2" title="2"><span class="kw">print</span>(ilse2)</a></code></pre></div>
+<p>Then, we fit a linear regression model with intercept by following command</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">ilse2 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>Xmis, <span class="dt">data=</span><span class="ot">NULL</span>, <span class="dt">verbose=</span>T)</a>
+<a class="sourceLine" id="cb9-2" title="2"><span class="kw">print</span>(ilse2)</a></code></pre></div>
 <p>Fourth, <em>Bootstrap</em> is applied to evaluate the standard error and p-values of each coefficients estimated by ILSE. We observe four significant coefficients.</p>
-<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb9-1" title="1">s2 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse2, <span class="dt">Nbt=</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb9-2" title="2">s2</a></code></pre></div>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">s2 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse2, <span class="dt">Nbt=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb10-2" title="2">s2</a></code></pre></div>
 <p>In <em>ILSE</em> package, we also provide Full Information Maximum Likelihood for Linear Regression <em>fimlreg</em>. We show how to use it to handle the above missing data.</p>
-<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb10-1" title="1">fimllm &lt;-<span class="st"> </span><span class="kw">fimlreg</span>(Y<span class="op">~</span>Xmis)</a>
-<a class="sourceLine" id="cb10-2" title="2"><span class="kw">print</span>(fimllm)</a></code></pre></div>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">fimllm &lt;-<span class="st"> </span><span class="kw">fimlreg</span>(Y<span class="op">~</span>Xmis)</a>
+<a class="sourceLine" id="cb11-2" title="2"><span class="kw">print</span>(fimllm)</a></code></pre></div>
 <p>We also use <em>bootstrap</em> to evaluate the standard error and p-values of each coefficients estimated by ILSE. We observe only one significant coefficients.</p>
-<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb11-1" title="1">s_fiml &lt;-<span class="st"> </span><span class="kw">summary</span>(fimllm, <span class="dt">Nbt=</span><span class="dv">20</span>)</a>
-<a class="sourceLine" id="cb11-2" title="2">s_fiml</a></code></pre></div>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">s_fiml &lt;-<span class="st"> </span><span class="kw">summary</span>(fimllm, <span class="dt">Nbt=</span><span class="dv">20</span>)</a>
+<a class="sourceLine" id="cb12-2" title="2">s_fiml</a></code></pre></div>
 </div>
-<div id="visualization" class="section level3">
-<h3>Visualization</h3>
+<div id="visualization" class="section level2">
+<h2>Visualization</h2>
 <p>We visualize the p-vaules of each methods , where red line denotes 0.05 in y-axis and blue line 0.1 in y-axis.</p>
-<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb12-1" title="1">pMat &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">CC=</span>s_cc<span class="op">$</span>coefficients[,<span class="dv">4</span>], <span class="dt">ILSE=</span>s2[,<span class="dv">4</span>], <span class="dt">FIML=</span>s_fiml[,<span class="dv">4</span>])</a>
-<a class="sourceLine" id="cb12-2" title="2"><span class="kw">library</span>(ggplot2)</a>
-<a class="sourceLine" id="cb12-3" title="3">df1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Pval=</span> <span class="kw">as.vector</span>(pMat[<span class="op">-</span><span class="dv">1</span>,]),</a>
-<a class="sourceLine" id="cb12-4" title="4">                    <span class="dt">Method =</span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;CC&#39;</span>, <span class="st">&quot;ILSE&quot;</span>, <span class="st">&quot;FIML&quot;</span>),<span class="dt">each=</span>p)),</a>
-<a class="sourceLine" id="cb12-5" title="5">                    <span class="dt">covariate=</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;X&quot;</span>, <span class="dv">1</span><span class="op">:</span>p), <span class="dt">times=</span><span class="dv">3</span>)))</a>
-<a class="sourceLine" id="cb12-6" title="6"><span class="kw">ggplot</span>(<span class="dt">data=</span>df1, <span class="kw">aes</span>(<span class="dt">x=</span>covariate, <span class="dt">y=</span>Pval, <span class="dt">fill=</span>Method)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">position =</span> <span class="st">&quot;dodge&quot;</span>, <span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>,<span class="dt">width =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.05</span>, <span class="dt">color=</span><span class="st">&#39;red&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.1</span>, <span class="dt">color=</span><span class="st">&#39;blue&#39;</span>)</a></code></pre></div>
+<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1">pMat &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">CC=</span>s_cc<span class="op">$</span>coefficients[,<span class="dv">4</span>], <span class="dt">ILSE=</span>s2[,<span class="dv">4</span>], <span class="dt">FIML=</span>s_fiml[,<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb13-2" title="2"><span class="kw">library</span>(ggplot2)</a>
+<a class="sourceLine" id="cb13-3" title="3">df1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Pval=</span> <span class="kw">as.vector</span>(pMat[<span class="op">-</span><span class="dv">1</span>,]),</a>
+<a class="sourceLine" id="cb13-4" title="4">                    <span class="dt">Method =</span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;CC&#39;</span>, <span class="st">&quot;ILSE&quot;</span>, <span class="st">&quot;FIML&quot;</span>),<span class="dt">each=</span>p)),</a>
+<a class="sourceLine" id="cb13-5" title="5">                    <span class="dt">covariate=</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;X&quot;</span>, <span class="dv">1</span><span class="op">:</span>p), <span class="dt">times=</span><span class="dv">3</span>)))</a>
+<a class="sourceLine" id="cb13-6" title="6"><span class="kw">ggplot</span>(<span class="dt">data=</span>df1, <span class="kw">aes</span>(<span class="dt">x=</span>covariate, <span class="dt">y=</span>Pval, <span class="dt">fill=</span>Method)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">position =</span> <span class="st">&quot;dodge&quot;</span>, <span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>,<span class="dt">width =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.05</span>, <span class="dt">color=</span><span class="st">&#39;red&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.1</span>, <span class="dt">color=</span><span class="st">&#39;blue&#39;</span>)</a></code></pre></div>
 </div>
 </div>
-<div id="session-information" class="section level2">
-<h2>Session information</h2>
-<div class="sourceCode" id="cb13"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb13-1" title="1"><span class="kw">sessionInfo</span>()</a>
-<a class="sourceLine" id="cb13-2" title="2"><span class="co">#&gt; R version 4.0.3 (2020-10-10)</span></a>
-<a class="sourceLine" id="cb13-3" title="3"><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></a>
-<a class="sourceLine" id="cb13-4" title="4"><span class="co">#&gt; Running under: Windows 10 x64 (build 22000)</span></a>
-<a class="sourceLine" id="cb13-5" title="5"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-6" title="6"><span class="co">#&gt; Matrix products: default</span></a>
-<a class="sourceLine" id="cb13-7" title="7"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-8" title="8"><span class="co">#&gt; locale:</span></a>
-<a class="sourceLine" id="cb13-9" title="9"><span class="co">#&gt; [1] LC_COLLATE=C                              </span></a>
-<a class="sourceLine" id="cb13-10" title="10"><span class="co">#&gt; [2] LC_CTYPE=Chinese (Simplified)_China.936   </span></a>
-<a class="sourceLine" id="cb13-11" title="11"><span class="co">#&gt; [3] LC_MONETARY=Chinese (Simplified)_China.936</span></a>
-<a class="sourceLine" id="cb13-12" title="12"><span class="co">#&gt; [4] LC_NUMERIC=C                              </span></a>
-<a class="sourceLine" id="cb13-13" title="13"><span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.936    </span></a>
-<a class="sourceLine" id="cb13-14" title="14"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-15" title="15"><span class="co">#&gt; attached base packages:</span></a>
-<a class="sourceLine" id="cb13-16" title="16"><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></a>
-<a class="sourceLine" id="cb13-17" title="17"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-18" title="18"><span class="co">#&gt; other attached packages:</span></a>
-<a class="sourceLine" id="cb13-19" title="19"><span class="co">#&gt; [1] ILSE_1.1.6</span></a>
-<a class="sourceLine" id="cb13-20" title="20"><span class="co">#&gt; </span></a>
-<a class="sourceLine" id="cb13-21" title="21"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
-<a class="sourceLine" id="cb13-22" title="22"><span class="co">#&gt;  [1] digest_0.6.28   R6_2.5.1        jsonlite_1.7.2  magrittr_2.0.1 </span></a>
-<a class="sourceLine" id="cb13-23" title="23"><span class="co">#&gt;  [5] evaluate_0.14   rlang_0.4.11    stringi_1.7.5   jquerylib_0.1.4</span></a>
-<a class="sourceLine" id="cb13-24" title="24"><span class="co">#&gt;  [9] bslib_0.3.1     rmarkdown_2.7   tools_4.0.3     stringr_1.4.0  </span></a>
-<a class="sourceLine" id="cb13-25" title="25"><span class="co">#&gt; [13] xfun_0.28       yaml_2.2.1      fastmap_1.1.0   compiler_4.0.3 </span></a>
-<a class="sourceLine" id="cb13-26" title="26"><span class="co">#&gt; [17] htmltools_0.5.2 knitr_1.36      sass_0.4.0</span></a></code></pre></div>
+<div id="ilse-can-handle-missing-data-with-continuos-and-categorical-variables" class="section level1">
+<h1>ILSE can handle missing data with continuos and categorical variables</h1>
+<p>Base on the above data, we add a new column, a categorical variable (Sex), into the data.frame. This variable is not associated with the outcome variable.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb14-1" title="1">dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Y=</span>Y, <span class="dt">X=</span>Xmis)</a>
+<a class="sourceLine" id="cb14-2" title="2">dat<span class="op">$</span>Sex &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;male&#39;</span>, <span class="st">&#39;female&#39;</span>), <span class="dt">times=</span>n<span class="op">/</span><span class="dv">2</span>))</a>
+<a class="sourceLine" id="cb14-3" title="3">dat<span class="op">$</span>Sex[<span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>n, n<span class="op">*</span>mis_rate)] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb14-4" title="4">ilse1 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>., <span class="dt">data=</span>dat, <span class="dt">verbose =</span> T)</a></code></pre></div>
+<p>We can change the bootstrap times in calculate the standard errors, Z value and p-values of coefficients.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb15-1" title="1">s3 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse1, <span class="dt">Nbt=</span><span class="dv">40</span>)</a>
+<a class="sourceLine" id="cb15-2" title="2">s3</a></code></pre></div>
+</div>
+<div id="ilse-can-correctly-identify-the-important-variables" class="section level1">
+<h1>ILSE can correctly identify the important variables</h1>
+<div id="generate-data" class="section level2">
+<h2>generate data</h2>
+<p>First, we generate data from a linear regression model with three inportant variables(1,3,5) and three unimportant variables(2,4,6).</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb16-1" title="1"><span class="kw">set.seed</span>(<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb16-2" title="2">n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb16-3" title="3">p &lt;-<span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb16-4" title="4">X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), <span class="kw">cor.mat</span>(p, <span class="dt">rho=</span><span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb16-5" title="5">beta0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="dv">0</span>), <span class="dt">times=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb16-6" title="6">Y &lt;-<span class="st"> </span><span class="dv">-2</span><span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta0 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb16-7" title="7"><span class="kw">message</span>(<span class="st">&quot;The true regression coefficients are: &quot;</span>, <span class="kw">paste0</span>(beta0, <span class="st">&#39;  &#39;</span>))</a></code></pre></div>
+<p>We randomly assign missing values in the design matrix.</p>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb17-1" title="1">mis_rate &lt;-<span class="st"> </span><span class="fl">0.3</span></a>
+<a class="sourceLine" id="cb17-2" title="2"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb17-3" title="3">na_id &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>(n<span class="op">*</span>p), n<span class="op">*</span>p<span class="op">*</span>mis_rate)</a>
+<a class="sourceLine" id="cb17-4" title="4">Xmis &lt;-<span class="st"> </span>X</a>
+<a class="sourceLine" id="cb17-5" title="5">Xmis[na_id] &lt;-<span class="st"> </span><span class="ot">NA</span></a></code></pre></div>
+<p>Next, we use ILSE to fit model.</p>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb18-1" title="1">dat &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Y=</span>Y, <span class="dt">X=</span>Xmis)</a>
+<a class="sourceLine" id="cb18-2" title="2">ilse1 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>., <span class="dt">data=</span>dat, <span class="dt">verbose =</span> T)</a>
+<a class="sourceLine" id="cb18-3" title="3">s3 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse1)</a>
+<a class="sourceLine" id="cb18-4" title="4">s3</a></code></pre></div>
+<p>Fit model by using lm and FIML, finally compare ILSE with these two methods.</p>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb19-1" title="1">lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Y<span class="op">~</span>Xmis)</a>
+<a class="sourceLine" id="cb19-2" title="2">s_cc &lt;-<span class="st"> </span><span class="kw">summary.lm</span>(lm1)</a>
+<a class="sourceLine" id="cb19-3" title="3">fimllm &lt;-<span class="st"> </span><span class="kw">fimlreg</span>(Y<span class="op">~</span>Xmis)</a>
+<a class="sourceLine" id="cb19-4" title="4">s_fiml &lt;-<span class="st"> </span><span class="kw">summary</span>(fimllm)</a></code></pre></div>
+</div>
+<div id="visualization-1" class="section level2">
+<h2>Visualization</h2>
+<p>We visualize the p-vaules of each methods , where red line denotes 0.05 in y-axis. Under significance level 0.05, we found both ILSE and FIML can identify all important variables (X1, X3 and X5), while CC method only identified X1 and X5.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb20-1" title="1"><span class="kw">library</span>(ggthemes)</a>
+<a class="sourceLine" id="cb20-2" title="2">pMat &lt;-<span class="st"> </span><span class="kw">cbind</span>(<span class="dt">CC=</span>s_cc<span class="op">$</span>coefficients[,<span class="dv">4</span>], <span class="dt">ILSE=</span>s3[,<span class="dv">4</span>], <span class="dt">FIML=</span>s_fiml[,<span class="dv">4</span>])</a>
+<a class="sourceLine" id="cb20-3" title="3">df1 &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">Pval=</span> <span class="kw">as.vector</span>(pMat[<span class="op">-</span><span class="dv">1</span>,]),</a>
+<a class="sourceLine" id="cb20-4" title="4">                    <span class="dt">Method =</span><span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">c</span>(<span class="st">&#39;CC&#39;</span>, <span class="st">&quot;ILSE&quot;</span>, <span class="st">&quot;FIML&quot;</span>),<span class="dt">each=</span>p)),</a>
+<a class="sourceLine" id="cb20-5" title="5">                    <span class="dt">covariate=</span> <span class="kw">factor</span>(<span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;X&quot;</span>, <span class="dv">1</span><span class="op">:</span>p), <span class="dt">times=</span><span class="dv">3</span>)))</a>
+<a class="sourceLine" id="cb20-6" title="6"><span class="kw">ggplot</span>(<span class="dt">data=</span>df1, <span class="kw">aes</span>(<span class="dt">x=</span>covariate, <span class="dt">y=</span>Pval, <span class="dt">fill=</span>Method)) <span class="op">+</span><span class="st"> </span><span class="kw">geom_bar</span>(<span class="dt">position =</span> <span class="st">&quot;dodge&quot;</span>, <span class="dt">stat=</span><span class="st">&quot;identity&quot;</span>,<span class="dt">width =</span> <span class="fl">0.5</span>) <span class="op">+</span><span class="st"> </span><span class="kw">geom_hline</span>(<span class="dt">yintercept =</span> <span class="fl">0.05</span>, <span class="dt">color=</span><span class="st">&#39;red&#39;</span>) <span class="op">+</span><span class="st"> </span><span class="kw">scale_fill_economist</span>()</a></code></pre></div>
+</div>
+</div>
+<div id="ilse-can-handle-data-with-high-missing-rate" class="section level1">
+<h1>ILSE can handle data with high missing rate</h1>
+<p>Here, we generate a data with 80% missing values, then use ILSE to fit model.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb21-1" title="1"></a>
+<a class="sourceLine" id="cb21-2" title="2"><span class="co"># generate data from linear model</span></a>
+<a class="sourceLine" id="cb21-3" title="3"><span class="kw">set.seed</span>(<span class="dv">10</span>)</a>
+<a class="sourceLine" id="cb21-4" title="4">n &lt;-<span class="st"> </span><span class="dv">100</span></a>
+<a class="sourceLine" id="cb21-5" title="5">p &lt;-<span class="st"> </span><span class="dv">6</span></a>
+<a class="sourceLine" id="cb21-6" title="6">X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), <span class="kw">cor.mat</span>(p, <span class="dt">rho=</span><span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb21-7" title="7">beta0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>), <span class="dt">times=</span><span class="dv">3</span>)</a>
+<a class="sourceLine" id="cb21-8" title="8">Y &lt;-<span class="st"> </span><span class="dv">-2</span><span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta0 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb21-9" title="9"></a>
+<a class="sourceLine" id="cb21-10" title="10"><span class="co"># generate missing values</span></a>
+<a class="sourceLine" id="cb21-11" title="11">mis_rate &lt;-<span class="st"> </span><span class="fl">0.8</span></a>
+<a class="sourceLine" id="cb21-12" title="12"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb21-13" title="13">na_id &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>(n<span class="op">*</span>p), n<span class="op">*</span>p<span class="op">*</span>mis_rate)</a>
+<a class="sourceLine" id="cb21-14" title="14">Xmis &lt;-<span class="st"> </span>X</a>
+<a class="sourceLine" id="cb21-15" title="15">Xmis[na_id] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb21-16" title="16"><span class="co"># retain 4 complete cases.</span></a>
+<a class="sourceLine" id="cb21-17" title="17">Xmis[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>,] &lt;-<span class="st"> </span>X[<span class="dv">1</span><span class="op">:</span><span class="dv">4</span>, ]</a>
+<a class="sourceLine" id="cb21-18" title="18"><span class="kw">sum</span>(<span class="kw">complete.cases</span>(Xmis))</a></code></pre></div>
+<p>CC method will failed.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb22-1" title="1">lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Y<span class="op">~</span>Xmis)</a>
+<a class="sourceLine" id="cb22-2" title="2"><span class="kw">summary.lm</span>(lm1)</a></code></pre></div>
+<p>However, ILSE can still work.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb23-1" title="1">ilse2 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>Xmis, <span class="dt">verbose =</span> T)</a>
+<a class="sourceLine" id="cb23-2" title="2">s2 &lt;-<span class="st"> </span><span class="kw">summary</span>(ilse2)</a>
+<a class="sourceLine" id="cb23-3" title="3">s2</a></code></pre></div>
+</div>
+<div id="ilse-can-handle-large-scale-data" class="section level1">
+<h1>ILSE can handle large-scale data</h1>
+<p>We generate a large-scale data with n=1000 and p = 50</p>
+<div class="sourceCode" id="cb24"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb24-1" title="1">n &lt;-<span class="st"> </span><span class="dv">1000</span></a>
+<a class="sourceLine" id="cb24-2" title="2">p &lt;-<span class="st"> </span><span class="dv">50</span></a>
+<a class="sourceLine" id="cb24-3" title="3">X &lt;-<span class="st"> </span>MASS<span class="op">::</span><span class="kw">mvrnorm</span>(n, <span class="kw">rep</span>(<span class="dv">0</span>, p), <span class="kw">cor.mat</span>(p, <span class="dt">rho=</span><span class="fl">0.5</span>))</a>
+<a class="sourceLine" id="cb24-4" title="4">beta0 &lt;-<span class="st"> </span><span class="kw">rep</span>(<span class="kw">c</span>(<span class="dv">1</span>,<span class="op">-</span><span class="dv">1</span>), <span class="dt">length=</span>p)</a>
+<a class="sourceLine" id="cb24-5" title="5">Y &lt;-<span class="st"> </span><span class="dv">-2</span><span class="op">+</span><span class="st"> </span>X <span class="op">%*%</span><span class="st"> </span>beta0 <span class="op">+</span><span class="st"> </span><span class="kw">rnorm</span>(n, <span class="dt">sd=</span><span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-6" title="6"></a>
+<a class="sourceLine" id="cb24-7" title="7">mis_rate &lt;-<span class="st"> </span><span class="fl">0.3</span></a>
+<a class="sourceLine" id="cb24-8" title="8"><span class="kw">set.seed</span>(<span class="dv">1</span>)</a>
+<a class="sourceLine" id="cb24-9" title="9">na_id &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">1</span><span class="op">:</span>(n<span class="op">*</span>p), n<span class="op">*</span>p<span class="op">*</span>mis_rate)</a>
+<a class="sourceLine" id="cb24-10" title="10">Xmis &lt;-<span class="st"> </span>X</a>
+<a class="sourceLine" id="cb24-11" title="11">Xmis[na_id] &lt;-<span class="st"> </span><span class="ot">NA</span></a>
+<a class="sourceLine" id="cb24-12" title="12"></a>
+<a class="sourceLine" id="cb24-13" title="13"></a>
+<a class="sourceLine" id="cb24-14" title="14">Xmis[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,] &lt;-<span class="st"> </span>X[<span class="dv">1</span><span class="op">:</span><span class="dv">10</span>,]</a>
+<a class="sourceLine" id="cb24-15" title="15">lm1 &lt;-<span class="st"> </span><span class="kw">lm</span>(Y<span class="op">~</span>Xmis)</a>
+<a class="sourceLine" id="cb24-16" title="16">lm1</a>
+<a class="sourceLine" id="cb24-17" title="17"><span class="kw">system.time</span>(ilse2 &lt;-<span class="st"> </span><span class="kw">ilse</span>(Y<span class="op">~</span>Xmis, <span class="dt">data=</span><span class="ot">NULL</span>, <span class="dt">verbose=</span>T))</a></code></pre></div>
+</div>
+<div id="session-information" class="section level1">
+<h1>Session information</h1>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb25-1" title="1"><span class="kw">sessionInfo</span>()</a>
+<a class="sourceLine" id="cb25-2" title="2"><span class="co">#&gt; R version 4.0.3 (2020-10-10)</span></a>
+<a class="sourceLine" id="cb25-3" title="3"><span class="co">#&gt; Platform: x86_64-w64-mingw32/x64 (64-bit)</span></a>
+<a class="sourceLine" id="cb25-4" title="4"><span class="co">#&gt; Running under: Windows 10 x64 (build 22000)</span></a>
+<a class="sourceLine" id="cb25-5" title="5"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-6" title="6"><span class="co">#&gt; Matrix products: default</span></a>
+<a class="sourceLine" id="cb25-7" title="7"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-8" title="8"><span class="co">#&gt; locale:</span></a>
+<a class="sourceLine" id="cb25-9" title="9"><span class="co">#&gt; [1] LC_COLLATE=C                              </span></a>
+<a class="sourceLine" id="cb25-10" title="10"><span class="co">#&gt; [2] LC_CTYPE=Chinese (Simplified)_China.936   </span></a>
+<a class="sourceLine" id="cb25-11" title="11"><span class="co">#&gt; [3] LC_MONETARY=Chinese (Simplified)_China.936</span></a>
+<a class="sourceLine" id="cb25-12" title="12"><span class="co">#&gt; [4] LC_NUMERIC=C                              </span></a>
+<a class="sourceLine" id="cb25-13" title="13"><span class="co">#&gt; [5] LC_TIME=Chinese (Simplified)_China.936    </span></a>
+<a class="sourceLine" id="cb25-14" title="14"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-15" title="15"><span class="co">#&gt; attached base packages:</span></a>
+<a class="sourceLine" id="cb25-16" title="16"><span class="co">#&gt; [1] stats     graphics  grDevices utils     datasets  methods   base     </span></a>
+<a class="sourceLine" id="cb25-17" title="17"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-18" title="18"><span class="co">#&gt; other attached packages:</span></a>
+<a class="sourceLine" id="cb25-19" title="19"><span class="co">#&gt; [1] ILSE_1.1.7</span></a>
+<a class="sourceLine" id="cb25-20" title="20"><span class="co">#&gt; </span></a>
+<a class="sourceLine" id="cb25-21" title="21"><span class="co">#&gt; loaded via a namespace (and not attached):</span></a>
+<a class="sourceLine" id="cb25-22" title="22"><span class="co">#&gt;  [1] Rcpp_1.0.7      digest_0.6.28   R6_2.5.1        jsonlite_1.7.2 </span></a>
+<a class="sourceLine" id="cb25-23" title="23"><span class="co">#&gt;  [5] magrittr_2.0.1  evaluate_0.14   pbapply_1.5-0   rlang_0.4.11   </span></a>
+<a class="sourceLine" id="cb25-24" title="24"><span class="co">#&gt;  [9] stringi_1.7.5   jquerylib_0.1.4 bslib_0.3.1     rmarkdown_2.11 </span></a>
+<a class="sourceLine" id="cb25-25" title="25"><span class="co">#&gt; [13] tools_4.0.3     stringr_1.4.0   parallel_4.0.3  xfun_0.29      </span></a>
+<a class="sourceLine" id="cb25-26" title="26"><span class="co">#&gt; [17] yaml_2.2.2      fastmap_1.1.0   compiler_4.0.3  htmltools_0.5.2</span></a>
+<a class="sourceLine" id="cb25-27" title="27"><span class="co">#&gt; [21] knitr_1.37      sass_0.4.0</span></a></code></pre></div>
 </div>
 
 

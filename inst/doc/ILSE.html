@@ -318,6 +318,13 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 
 
+<div id="install-the-ilse" class="section level2">
+<h2>Install the ILSE</h2>
+<p>This vignette provides an introduction to the R package <code>ILSE</code>, where the function <code>ILSE</code> implements the model <code>ILSE</code>, Linear Regression by Iterative Least Square Estimation (ILSE) When Covariates Include Missing Values. The package can be installed with the command from <a href="https://github.com/feiyoung/ILSE">Github</a>:</p>
+<p><code>library(remotes)</code></p>
+<p><code>remotes::install_github(&quot;feiyoung/ILSE&quot;)</code></p>
+<p>or install from <a href="https://cran.r-project.org/">CRAN</a></p>
+<p><code>install.packages(&quot;ILSE&quot;)</code></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="kw">library</span>(ILSE)</a>
 <a class="sourceLine" id="cb1-2" title="2"><span class="co">#&gt; ILSE :  Linear regression when covariates include missing values by embedding the</span></a>
 <a class="sourceLine" id="cb1-3" title="3"><span class="co">#&gt; correlation information between covariates. Especially for block missing data,</span></a>
@@ -329,6 +336,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 <a class="sourceLine" id="cb1-9" title="9"><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></a>
 <a class="sourceLine" id="cb1-10" title="10"><span class="co">#&gt; </span></a>
 <a class="sourceLine" id="cb1-11" title="11"><span class="co">#&gt;     print, summary</span></a></code></pre></div>
+</div>
 
 
 
